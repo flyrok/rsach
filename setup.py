@@ -18,7 +18,7 @@ exec(open(here / "tdms2bin/version.py").read())
 
 VERSION=__version__
 DESCRIPTION="Convert channel data in a tdms file to f4"
-URL="https://github.com/flyrok/fft_tdms"
+URL="https://github.com/flyrok/"
 AUTHOR="A Ferris"
 EMAIL="aferris@ara.com"
 CLASSIFIERS=['Development Status :: 3 - Alpha',
@@ -26,7 +26,7 @@ CLASSIFIERS=['Development Status :: 3 - Alpha',
     'Topic :: TDMS:: Helper Scripts',
     'License :: OSI Approved :: GPL-3 License',
      'Programming Language :: Python :: 3']
-KEYWORDS="tdms"     
+KEYWORDS="tdms nptdms"     
 
 INSTALL_REQUIRES = [
     'numpy>=1.6.1',

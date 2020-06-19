@@ -22,7 +22,7 @@ cd tdms2bin;
 pip3 install .
 `  
 
-*** Option 2 ***
+*** Option 2 (not available) ***
 
 Clone source package  
 `git clone http://github.com/flyrok/tdms2bin`
@@ -38,13 +38,29 @@ Or install directly from github
 
 
 ## Python Dependencies ##
-python>=3.6 (script uses f-strings)  
+* python>=3.6 
 
 If using python 3.5, then the user needs to install future_fstrings. The setup.py will not.  
 `pip3 install future_fstrings` 
 
-npTDMS>=0.27.0  
-numpy  
+If these aren't currently installed, the setup.py will try to install them    
+* npTDMS>=0.27.0  
+* numpy  
+
+### Virtual Environment ###
+If desired, you can run 'tdms2bin' in a virtual python environment. One way to do that:  
+`
+python3 -m venv venv  
+source venv/bin/activate  
+cd tdms2bin  
+pip install .  
+cd to_the_data_dir  
+tdms2bin -f file.tdms  
+deactivate (to exit virtual environ)  
+'
+
+All the INSTALL_REQUIRED files in the setup.py will be installed inside the viritual environment  
+
 
 ## Usage/Examples ##
 
