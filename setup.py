@@ -13,25 +13,24 @@ readme=here / 'README.md'
 with open(readme, encoding='utf-8') as f:
     long_description = f.read()
 
-PROJECT_NAME="tdms2bin"
-exec(open(here / "tdms2bin/version.py").read())
+PROJECT_NAME="rsach"
+exec(open(here / "rsach/version.py").read())
 
 VERSION=__version__
 DESCRIPTION="Convert channel data in a tdms file to f4"
-URL="https://github.com/flyrok/"
+URL="https://github.com/flyrok/rsach"
 AUTHOR="A Ferris"
-EMAIL="aferris@ara.com"
+EMAIL="flyrok@gmail.com"
 CLASSIFIERS=['Development Status :: 3 - Alpha',
     'Intended Audience :: Scientists ',
     'Topic :: TDMS:: Helper Scripts',
     'License :: OSI Approved :: GPL-3 License',
      'Programming Language :: Python :: 3']
-KEYWORDS="tdms nptdms"     
+KEYWORDS="sac header"     
 
 INSTALL_REQUIRES = [
     'numpy>=1.6.1',
-    'nptdms',
-    'configparser',
+    'obspy',
     ]
 
 setup(
@@ -47,10 +46,10 @@ setup(
     keywords=KEYWORDS,  # Optional
     python_requires='>=3.6',
     include_package_data=True,
-    packages=['tdms2bin'],
+    packages=['rsach'],
     entry_points={  # Optional
         'console_scripts': [
-            'tdms2bin=tdms2bin.tdms2bin:main',
+            'rsach=rsach.rsach:main',
         ],
     },
     install_requires=INSTALL_REQUIRES,
