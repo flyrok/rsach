@@ -1,6 +1,6 @@
 """
-Convert the channel data in a tdms file
-to a 4-byte float file
+Cmdline program to read specific sac header values
+
 """
 
 from setuptools import setup, find_packages
@@ -29,7 +29,6 @@ CLASSIFIERS=['Development Status :: 3 - Alpha',
 KEYWORDS="sac header"     
 
 INSTALL_REQUIRES = [
-    'numpy>=1.6.1',
     'obspy',
     ]
 

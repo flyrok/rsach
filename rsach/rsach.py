@@ -2,7 +2,7 @@
 
 '''
 
-Aaron Ferris
+
 '''
 
 # standard system stuff -------------------------

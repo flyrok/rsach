@@ -1,31 +1,18 @@
-## tdms2bin ##
-Convert each Device/Channel in a TDMS file to separate 4-byte float file
+## rsach ##
 
-### Purpose/Assumtions/Info ###
+Quick/dirty cmdline script to read and report specific SAC header values.
 
-`tdms2bin` originally written to convert BRAVO data. The TDMS channel data are stored as
-2-byte intergers. Converting them to 4-bytes, doubles the storage. The current version of `tdms2info` does not check that disks space is available before boldly writing a new file.
+Requires ObsPy.
 
-Program assumes that an 'Unscaled Data' and 'Scaling Coefficients' group exist in the file, If not, then the user needs to input the right group names  via command line paramater (see below)
+Return header as key:value pair.
 
-The program assumes the 'Scaling coeffcients' are linear and entered in the TDMS as [DC_offset, scale_factor]
+Currently works on only 1 file at a time
 
 
-## Installation ##
-
-*** Option 1 ***  
-Obtain the tdms2bin.tgz source package and   
-
-`
-tar xzvf tdms2bin.tgz;   
-cd tdms2bin; 
-pip3 install .
-`  
-
-*** Option 2 (not available) ***
+### Installation ### 
 
 Clone source package  
-`git clone http://github.com/flyrok/tdms2bin`
+`git clone http://github.com/flyrok/rsach`
 
 Install with pip after download  
 `pip install .`
@@ -34,64 +21,34 @@ Or, install in editable mode
 `pip install -e .`
 
 Or install directly from github  
-`pip install git+https://github.com/flyrok/tdms2bin#egg=plot_tdms`
+`pip install git+https://github.com/flyrok/rsach#egg=rsach`
 
 
 ## Python Dependencies ##
 * python>=3.6 
 
-If using python 3.5, then the user needs to install future_fstrings. The setup.py will not.  
-`pip3 install future_fstrings` 
-
-If these aren't currently installed, the setup.py will try to install them    
-* npTDMS>=0.27.0  
-* numpy  
-
-### Virtual Environment ###
-If desired, you can run 'tdms2bin' in a virtual python environment. One way to do that:  
-`
-python3 -m venv venv  
-source venv/bin/activate  
-cd tdms2bin  
-pip install .  
-cd to_the_data_dir  
-tdms2bin -f file.tdms  
-deactivate (to exit virtual environ)  
-'
-
-All the INSTALL_REQUIRED files in the setup.py will be installed inside the viritual environment  
+*  ObsPy
 
 
 ## Usage/Examples ##
 
 To see help:  
-`tdms2bin --help`    
+`rsach --help`    
 
 To see version:  
-`tdms2bin --version`    
+`rsach --version`    
 
-** Example 1 **  
+To report origin time field:  
+`rsach -f DAG-1.IM.NV10..SHZ.sac -k nzyear nzjday nzhour nzmin nzsec nzmsec`  
+nzyear:2018 nzjday:201 nzhour:16 nzmin:51 nzsec:52 nzmsec:680
 
-To convert file *200218_192507_LS_BALTORO_5_Nom.tdms* with debug messages on and saving to the default output files  
+To report origin time in isoformat:  
+`rsach -f DAG-1.IM.NV10..SHZ.sac -k  otime`
+2018-07-20T16:51:52.680000
 
-`tdms2bin -f 200218_192507_LS_BALTORO_5_Nom.tdms -vvv`  
-  
-This will spew a lot  of messages and produce files  
-
-1. -rw-r--r-- 1 aferris aferris 36400052 Jun 18 12:12 200218_192507_LS_BALTORO_5_Nom.Dev1.ai3.bin  
-2. -rw-r--r-- 1 aferris aferris 36400052 Jun 18 12:12 200218_192507_LS_BALTORO_5_Nom.Dev1.ai0.bin  
-
-** Example 2 **  
-
-To convert file *200218_192507_LS_BALTORO_5_Nom.tdms* and save to files with a filename_root of *junk*  
-
-`tdms2bin -f 200218_192507_LS_BALTORO_5_Nom.tdms -o junk ` 
-
-This will produce files with names  
-
-1. -rw-r--r-- 1 aferris aferris 36400052 Jun 18 12:42 junk.Dev1.ai3.bin  
-2. -rw-r--r-- 1 aferris aferris 36400052 Jun 18 12:42 junk.Dev1.ai0.bin  
-
+To report P arrival time:  
+`rsach -f DAG-2.IM.NV10..SHZ.sac -k a`
+a:38.236
 
 
 
