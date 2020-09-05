@@ -9,7 +9,7 @@
 from pathlib import Path
 import sys
 import argparse
-from obspy import read, UTCDateTime
+from obspy import Stream,read, UTCDateTime
 import logging
 
 # END Module import -----------------------------
@@ -27,44 +27,51 @@ class rsach(object):
         # class debug level
         self.log=self._setup_log(debug)
 
-    def read_sac(self,sac_file):
-        try: 
-            tr=read(sac_file)[0]
-        except Exception as e:
-            self.log.error(f'Problem reading {sac_file}. Error is: \n\t{e}')
-            sys.exit(0)
-        return tr
+    def read_sac(self,sac_files):
+        st=Stream()
+        for sac in sac_files:
+            try: 
+                st+=read(sac)
+            except Exception as e:
+                self.log.error(f'Problem reading {sac}. Error is: \n\t{e}')
+                pass
+        return st
     
-    def report(self,tr,keys):
-        try:
-            sacd=tr.stats.sac
-        except Exception as e:
-            self.log.error('Problem with trace stats.sac. Error is: \n\t{e}')
-            sys.exit(0)
-        msg='' 
-        if 'otime' in keys:
-            keys.remove('otime')
+    def report(self,st,keys):
+        # grab the sac attribute dict
+        for tr in st:
             try:
-                YYYY=sacd['nzyear'.lower()]
-                DDD=sacd['nzjday'.lower()]
-                H=sacd['nzhour'.lower()]
-                M=sacd['nzmin'.lower()]
-                S=sacd['nzsec'.lower()]
-                MS=sacd['nzmsec'.lower()]
-                t=UTCDateTime(f'{YYYY:04d}{DDD:03d}T{H:02d}{M:02d}{S:02d}.{MS}').isoformat()
-                msg+=f'{t} '
+                sacd=tr.stats.sac
+            except Exception as e:
+                self.log.error('Problem with trace stats.sac. Error is: \n\t{e}')
+                sys.exit(0)
+            # if otime requested, grab pertinent header fields and run through 
+            # UTCDateTime
+            msg='' 
+            if 'otime' in keys:
+                keys.remove('otime')
+                try:
+                    YYYY=sacd['nzyear'.lower()]
+                    DDD=sacd['nzjday'.lower()]
+                    H=sacd['nzhour'.lower()]
+                    M=sacd['nzmin'.lower()]
+                    S=sacd['nzsec'.lower()]
+                    MS=sacd['nzmsec'.lower()]
+                    t=UTCDateTime(f'{YYYY:04d}{DDD:03d}T{H:02d}{M:02d}{S:02d}.{MS}').isoformat()
+                    msg+=f'{t} '
 
 
-            except Exception as e:
-                self.log.error(f'Problem with otime keys, error:\n\t{e}')
-                pass
-        for i in keys:
-            try:
-                msg+=f'{i}:{sacd[i.lower()]} '
-            except Exception as e:
-                self.log.error(f'Problem, error is: \n\t{e}')
-                pass
-        print(msg)
+                except Exception as e:
+                    self.log.error(f'Problem with otime keys, error:\n\t{e}')
+                    pass
+            # Loop through requested sac headers and report values
+            for i in keys:
+                try:
+                    msg+=f'{i}:{sacd[i.lower()]} '
+                except Exception as e:
+                    self.log.error(f'Problem with keys, error is: \n\t{e}')
+                    pass
+            print(msg)
 
 
 
@@ -127,7 +134,7 @@ def main():
             Example usage:
             ''')
 
-    parser.add_argument("-f","--sacfile",type=str, 
+    parser.add_argument("-f","--sacfile",nargs='*',type=str, 
         required=True, help="Input sac file.")
 
 
@@ -146,8 +153,8 @@ def main():
     debug=args.verbose
 
     obj=rsach(debug=debug)
-    tr=obj.read_sac(sac)
-    obj.report(tr,keys)
+    st=obj.read_sac(sac)
+    obj.report(st,keys)
 
 if __name__ == '__main__':
     main()
