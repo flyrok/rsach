@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-
+Report SAC header values from a list of SAC files. 
 
 '''
 
@@ -23,11 +23,13 @@ class rsach(object):
     def __init__(self,debug=None):
         '''
         '''
-
         # class debug level
         self.log=self._setup_log(debug)
 
     def read_sac(self,sac_files):
+        _name='read_sac'
+        '''
+        '''
         st=Stream()
         for sac in sac_files:
             try: 
@@ -37,7 +39,10 @@ class rsach(object):
                 pass
         return st
     
-    def report(self,st,keys):
+    def report(self,st,keys,nokey=False):
+        _name='report'
+        '''
+        '''
         # grab the sac attribute dict
         for tr in st:
             try:
@@ -67,7 +72,10 @@ class rsach(object):
             # Loop through requested sac headers and report values
             for i in keys:
                 try:
-                    msg+=f'{i}:{sacd[i.lower()]} '
+                    if nokey:
+                        msg+=f'{sacd[i.lower()]} '
+                    else:
+                        msg+=f'{i}={sacd[i.lower()]} '
                 except Exception as e:
                     self.log.error(f'Problem with keys, error is: \n\t{e}')
                     pass
@@ -137,12 +145,14 @@ def main():
     parser.add_argument("-f","--sacfile",nargs='*',type=str, 
         required=True, help="Input sac file.")
 
-
     parser.add_argument("-k","--keys", type=str, nargs="*", 
         required=True, help="Sac header keys. add otime to get origin time in isoformat")
 
     parser.add_argument("-v", "--verbose", action="count",default=0,
         help="Turn on debug spewage (e.g. -v, -vv, -vvv)")
+
+    parser.add_argument("-n", "--nokey", action="store_true",default=False,
+        help=" don't remote key=value, just report value.")
 
     parser.add_argument('--version', action='version',
         version='%(prog)s {version}'.format(version=__version__))
@@ -154,7 +164,7 @@ def main():
 
     obj=rsach(debug=debug)
     st=obj.read_sac(sac)
-    obj.report(st,keys)
+    obj.report(st,keys,nokey=args.nokey)
 
 if __name__ == '__main__':
     main()
